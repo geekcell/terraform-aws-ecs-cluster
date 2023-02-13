@@ -20,7 +20,7 @@ content: |-
   {{- end }}
 
   # Examples
-    ### Minimal
+    ### Minimum
     ```hcl
     {{ include "examples/min/main.tf" }}
     ```
