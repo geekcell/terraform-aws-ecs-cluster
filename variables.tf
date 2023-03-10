@@ -17,14 +17,14 @@ variable "enable_container_insights" {
   type        = bool
 }
 
-variable "enable_execute_command_logging" {
-  description = "Enable execute command logging for the cluster."
+variable "encrypt_execute_command_session" {
+  description = "Encrypt execute command session for the cluster."
   default     = true
   type        = bool
 }
 
-variable "encrypt_execute_command_session" {
-  description = "Encrypt execute command session for the cluster."
-  default     = true
+variable "logging_execute_command_session" {
+  description = "DEFAULT"
+  default     = false
   type        = bool
 }

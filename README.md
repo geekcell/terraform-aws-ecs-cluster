@@ -40,28 +40,13 @@ Cluster with enabled Container Insights, logging, and advanced monitoring. With 
 manage, and scale your Docker containers and applications in the cloud while having complete visibility into their
 performance and health.
 
-The module includes encryption for command sessions to ensure the privacy and protection of your data. It also
-includes Container Insights, a feature that provides in-depth operational visibility into your containers and
-applications running on the ECS Cluster. With Container Insights, you can monitor performance metrics, identify
-issues, and resolve them quickly to optimize your ECS environment for better performance and efficiency.
-
-In addition, this Terraform module includes advanced logging and monitoring capabilities, making it easy to track
-and troubleshoot any issues with your ECS cluster. The logging feature provides detailed information about the
-activity within your ECS cluster, while the advanced monitoring allows you to set up custom alarms to proactively
-identify and address potential problems.
-
-Our team has extensive experience working with AWS ECS and has optimized this Terraform module to provide a
-seamless experience for users. Whether you are just getting started with containers or looking to enhance your
-current setup, this module provides a preconfigured solution for efficiently managing your ECS Cluster with enabled
-Container Insights, logging, and advanced monitoring.
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_enable_container_insights"></a> [enable\_container\_insights](#input\_enable\_container\_insights) | Enable CloudWatch Container Insights for the cluster. | `bool` | `true` | no |
-| <a name="input_enable_execute_command_logging"></a> [enable\_execute\_command\_logging](#input\_enable\_execute\_command\_logging) | Enable execute command logging for the cluster. | `bool` | `true` | no |
 | <a name="input_encrypt_execute_command_session"></a> [encrypt\_execute\_command\_session](#input\_encrypt\_execute\_command\_session) | Encrypt execute command session for the cluster. | `bool` | `true` | no |
+| <a name="input_logging_execute_command_session"></a> [logging\_execute\_command\_session](#input\_logging\_execute\_command\_session) | DEFAULT | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the ECS cluster. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to add to the ECS cluster. | `map(any)` | `{}` | no |
 
@@ -70,6 +55,8 @@ Container Insights, logging, and advanced monitoring.
 | Name | Description |
 |------|-------------|
 | <a name="output_arn"></a> [arn](#output\_arn) | The ARN of the ECS cluster. |
+| <a name="output_command_session_cloudwatch_log_group_arn"></a> [command\_session\_cloudwatch\_log\_group\_arn](#output\_command\_session\_cloudwatch\_log\_group\_arn) | The ARN of the CloudWatch log group used to store the command session. |
+| <a name="output_command_session_kms_arn"></a> [command\_session\_kms\_arn](#output\_command\_session\_kms\_arn) | The ARN of the KMS key used to encrypt the command session. |
 | <a name="output_name"></a> [name](#output\_name) | The name of the ECS cluster. |
 
 ## Providers
@@ -80,8 +67,8 @@ Container Insights, logging, and advanced monitoring.
 
 ## Resources
 
-- resource.aws_cloudwatch_log_group.main (main.tf#68)
-- resource.aws_ecs_cluster.main (main.tf#24)
+- resource.aws_cloudwatch_log_group.main (main.tf#54)
+- resource.aws_ecs_cluster.main (main.tf#10)
 
 # Examples
 ### Minimum
