@@ -45,7 +45,7 @@ resource "aws_ecs_cluster" "main" {
 module "kms" {
   count = var.encrypt_execute_command_session ? 1 : 0
 
-  source = "github.com/geekcell/terraform-aws-kms?ref=v1.0"
+  source = "github.com/geekcell/terraform-aws-kms?ref=main"
   alias  = "ecs/cluster/${var.name}/ssm-logs"
 
   tags = var.tags
