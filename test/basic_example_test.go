@@ -1,6 +1,7 @@
 package test
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ecs"
 	"os"
 	"testing"
@@ -44,7 +45,7 @@ func TestTerraformBasicExample(t *testing.T) {
 
 	assert.Equal(t, 1, len(output.Clusters))
 
-	assert.Equal(t, clusterName, output.Clusters[0].ClusterName)
+	assert.Equal(t, clusterName, aws.StringValue(output.Clusters[0].ClusterName))
 }
 
 func NewSession(region string) (*session.Session, error) {
