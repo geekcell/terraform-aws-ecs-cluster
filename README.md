@@ -45,8 +45,8 @@ performance and health.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_enable_container_insights"></a> [enable\_container\_insights](#input\_enable\_container\_insights) | Enable CloudWatch Container Insights for the cluster. | `bool` | `true` | no |
-| <a name="input_encrypt_execute_command_session"></a> [encrypt\_execute\_command\_session](#input\_encrypt\_execute\_command\_session) | Encrypt execute command session for the cluster. | `bool` | `true` | no |
-| <a name="input_logging_execute_command_session"></a> [logging\_execute\_command\_session](#input\_logging\_execute\_command\_session) | DEFAULT | `bool` | `false` | no |
+| <a name="input_encrypt_execute_command_session"></a> [encrypt\_execute\_command\_session](#input\_encrypt\_execute\_command\_session) | Encrypt execute command session for the cluster. | `bool` | `false` | no |
+| <a name="input_logging_execute_command_session"></a> [logging\_execute\_command\_session](#input\_logging\_execute\_command\_session) | Log execute command session for the cluster. | `string` | `"DEFAULT"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the ECS cluster. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to add to the ECS cluster. | `map(any)` | `{}` | no |
 
@@ -73,10 +73,10 @@ performance and health.
 # Examples
 ### Minimum
 ```hcl
-module "min" {
+module "basic-example" {
   source = "../../"
 
-  name = "my-cluster"
+  name = var.name
 }
 ```
 <!-- END_TF_DOCS -->
