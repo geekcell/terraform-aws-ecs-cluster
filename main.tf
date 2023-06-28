@@ -45,10 +45,11 @@ resource "aws_ecs_cluster" "main" {
 module "kms" {
   count = var.encrypt_execute_command_session ? 1 : 0
 
-  source = "github.com/geekcell/terraform-aws-kms?ref=main"
-  alias  = "ecs/cluster/${var.name}/ssm-logs"
+  source  = "geekcell/kms/aws"
+  version = ">= 1.0.0, < 2.0.0"
 
-  tags = var.tags
+  alias = "ecs/cluster/${var.name}/ssm-logs"
+  tags  = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "main" {
