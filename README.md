@@ -1,5 +1,5 @@
 <!-- BEGIN_TF_DOCS -->
-[![Geek Cell GmbH](https://raw.githubusercontent.com/geekcell/template-terraform-module/main/docs/assets/logo.svg)](https://www.geekcell.io/)
+[![Geek Cell GmbH](https://raw.githubusercontent.com/geekcell/.github/main/geekcell-github-banner.png)](https://www.geekcell.io/)
 
 ### Code Quality
 [![License](https://img.shields.io/github/license/geekcell/terraform-aws-ecs-cluster)](https://github.com/geekcell/terraform-aws-ecs-cluster/blob/master/LICENSE)
@@ -67,11 +67,11 @@ performance and health.
 
 ## Resources
 
-- resource.aws_cloudwatch_log_group.main (main.tf#54)
+- resource.aws_cloudwatch_log_group.main (main.tf#55)
 - resource.aws_ecs_cluster.main (main.tf#10)
 
 # Examples
-### Minimum
+### Basic Example
 ```hcl
 module "basic-example" {
   source = "../../"
