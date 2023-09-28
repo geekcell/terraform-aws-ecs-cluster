@@ -67,6 +67,7 @@ performance and health.
 
 ## Resources
 
+- resource.aws_cloudwatch_log_group.container_insights (main.tf#62)
 - resource.aws_cloudwatch_log_group.main (main.tf#55)
 - resource.aws_ecs_cluster.main (main.tf#10)
 
