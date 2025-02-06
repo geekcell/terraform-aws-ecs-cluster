@@ -19,21 +19,34 @@ resource "aws_ecs_cluster" "main" {
     }
   }
 
+
   dynamic "configuration" {
     for_each = var.encrypt_execute_command_session || var.logging_execute_command_session != "DEFAULT" ? [true] : []
 
     content {
-      execute_command_configuration {
-        kms_key_id = var.encrypt_execute_command_session ? module.kms[0].key_id : null
-        logging    = var.logging_execute_command_session
+      dynamic "execute_command_configuration" {
+        for_each = var.encrypt_execute_command_session || var.logging_execute_command_session != "DEFAULT" ? [true] : []
 
-        dynamic "log_configuration" {
-          for_each = var.logging_execute_command_session == "OVERRIDE" ? [true] : []
+        content {
+          kms_key_id = var.encrypt_execute_command_session ? module.kms[0].key_id : null
+          logging    = var.logging_execute_command_session
 
-          content {
-            cloud_watch_encryption_enabled = false
-            cloud_watch_log_group_name     = aws_cloudwatch_log_group.main[0].name
+          dynamic "log_configuration" {
+            for_each = var.logging_execute_command_session == "OVERRIDE" ? [true] : []
+
+            content {
+              cloud_watch_encryption_enabled = false
+              cloud_watch_log_group_name     = aws_cloudwatch_log_group.main[0].name
+            }
           }
+        }
+      }
+
+      dynamic "managed_storage_configuration" {
+        for_each = var.encrypt_ephemeral_storage ? [true] : []
+
+        content {
+          fargate_ephemeral_storage_kms_key_id = module.kms_ephemeral[0].key_id
         }
       }
     }
@@ -66,4 +79,88 @@ resource "aws_cloudwatch_log_group" "container_insights" {
   retention_in_days = 1
 
   tags = var.tags
+}
+
+module "kms_ephemeral" {
+  count = var.encrypt_ephemeral_storage ? 1 : 0
+
+  source  = "geekcell/kms/aws"
+  version = ">= 1.0.0, < 2.0.0"
+  policy  = data.aws_iam_policy_document.kms_ephemeral[0].json
+
+  alias = "ecs/cluster/${var.name}/ephemeral-storage"
+  tags  = var.tags
+}
+
+data "aws_caller_identity" "current" {}
+data "aws_iam_policy_document" "kms_ephemeral" {
+  count = var.encrypt_ephemeral_storage ? 1 : 0
+
+  statement {
+    sid       = "Enable IAM User Permissions."
+    effect    = "Allow"
+    actions   = ["kms:*"]
+    resources = ["*"]
+
+    principals {
+      identifiers = ["*"]
+      type        = "AWS"
+    }
+  }
+
+  statement {
+    sid     = "Allow generate data key access for Fargate tasks."
+    effect  = "Allow"
+    actions = ["kms:GenerateDataKeyWithoutPlaintext"]
+
+    principals {
+      identifiers = ["fargate.amazonaws.com"]
+      type        = "Service"
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:EncryptionContext:aws:ecs:clusterAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:EncryptionContext:aws:ecs:clusterName"
+      values   = [var.name]
+    }
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid     = "Allow grant creation permission for Fargate tasks."
+    effect  = "Allow"
+    actions = ["kms:CreateGrant"]
+
+    principals {
+      identifiers = ["fargate.amazonaws.com"]
+      type        = "Service"
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:EncryptionContext:aws:ecs:clusterAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:EncryptionContext:aws:ecs:clusterName"
+      values   = [var.name]
+    }
+
+    condition {
+      test     = "ForAllValues:StringEquals"
+      variable = "kms:GrantOperations"
+      values   = ["Decrypt"]
+    }
+
+    resources = ["*"]
+  }
 }

@@ -23,6 +23,12 @@ variable "encrypt_execute_command_session" {
   type        = bool
 }
 
+variable "encrypt_ephemeral_storage" {
+  description = "Encrypt the ECS ephemeral storage for the cluster."
+  default     = false
+  type        = bool
+}
+
 variable "logging_execute_command_session" {
   description = "Log execute command session for the cluster."
   default     = "DEFAULT"

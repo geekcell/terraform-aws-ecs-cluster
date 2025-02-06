@@ -45,6 +45,7 @@ performance and health.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_enable_container_insights"></a> [enable\_container\_insights](#input\_enable\_container\_insights) | Enable CloudWatch Container Insights for the cluster. | `bool` | `true` | no |
+| <a name="input_encrypt_ephemeral_storage"></a> [encrypt\_ephemeral\_storage](#input\_encrypt\_ephemeral\_storage) | Encrypt the ECS ephemeral storage for the cluster. | `bool` | `false` | no |
 | <a name="input_encrypt_execute_command_session"></a> [encrypt\_execute\_command\_session](#input\_encrypt\_execute\_command\_session) | Encrypt execute command session for the cluster. | `bool` | `false` | no |
 | <a name="input_logging_execute_command_session"></a> [logging\_execute\_command\_session](#input\_logging\_execute\_command\_session) | Log execute command session for the cluster. | `string` | `"DEFAULT"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the ECS cluster. | `string` | n/a | yes |
@@ -63,13 +64,15 @@ performance and health.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.36 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.59 |
 
 ## Resources
 
-- resource.aws_cloudwatch_log_group.container_insights (main.tf#62)
-- resource.aws_cloudwatch_log_group.main (main.tf#55)
+- resource.aws_cloudwatch_log_group.container_insights (main.tf#75)
+- resource.aws_cloudwatch_log_group.main (main.tf#68)
 - resource.aws_ecs_cluster.main (main.tf#10)
+- data source.aws_caller_identity.current (main.tf#95)
+- data source.aws_iam_policy_document.kms_ephemeral (main.tf#96)
 
 # Examples
 ### Basic Example
