@@ -73,7 +73,7 @@ performance and health.
 - resource.aws_cloudwatch_log_group.main (main.tf#73)
 - resource.aws_ecs_cluster.main (main.tf#10)
 - data source.aws_caller_identity.current (main.tf#100)
-- data source.aws_iam_policy_document.kms_ephemeral (main.tf#101)
+- data source.aws_iam_policy_document.kms_storage (main.tf#101)
 
 # Examples
 ### Basic Example
