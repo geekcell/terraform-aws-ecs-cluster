@@ -19,9 +19,13 @@ resource "aws_ecs_cluster" "main" {
     }
   }
 
-
   dynamic "configuration" {
-    for_each = var.encrypt_execute_command_session || var.logging_execute_command_session != "DEFAULT" ? [true] : []
+    for_each = (
+      var.encrypt_execute_command_session ||
+      var.logging_execute_command_session != "DEFAULT" ||
+      var.encrypt_ephemeral_storage ||
+      var.encrypt_managed_storage
+    ) ? [true] : []
 
     content {
       dynamic "execute_command_configuration" {
@@ -43,10 +47,11 @@ resource "aws_ecs_cluster" "main" {
       }
 
       dynamic "managed_storage_configuration" {
-        for_each = var.encrypt_ephemeral_storage ? [true] : []
+        for_each = var.encrypt_ephemeral_storage || var.encrypt_managed_storage ? [true] : []
 
         content {
-          fargate_ephemeral_storage_kms_key_id = module.kms_ephemeral[0].key_id
+          kms_key_id                           = var.encrypt_managed_storage ? module.kms[0].key_id : null
+          fargate_ephemeral_storage_kms_key_id = var.encrypt_ephemeral_storage ? module.kms_ephemeral[0].key_id : null
         }
       }
     }
@@ -82,19 +87,19 @@ resource "aws_cloudwatch_log_group" "container_insights" {
 }
 
 module "kms_ephemeral" {
-  count = var.encrypt_ephemeral_storage ? 1 : 0
+  count = var.encrypt_ephemeral_storage || var.encrypt_managed_storage ? 1 : 0
 
   source  = "geekcell/kms/aws"
   version = ">= 1.0.0, < 2.0.0"
   policy  = data.aws_iam_policy_document.kms_ephemeral[0].json
 
-  alias = "ecs/cluster/${var.name}/ephemeral-storage"
+  alias = "ecs/cluster/${var.name}/managed-storage"
   tags  = var.tags
 }
 
 data "aws_caller_identity" "current" {}
 data "aws_iam_policy_document" "kms_ephemeral" {
-  count = var.encrypt_ephemeral_storage ? 1 : 0
+  count = var.encrypt_ephemeral_storage || var.encrypt_managed_storage ? 1 : 0
 
   statement {
     sid       = "Enable IAM User Permissions."
