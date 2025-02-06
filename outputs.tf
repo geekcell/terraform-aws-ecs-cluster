@@ -8,6 +8,11 @@ output "arn" {
   value       = aws_ecs_cluster.main.arn
 }
 
+output "storage_kms_arn" {
+  description = "The ARN of the KMS key used to encrypt the storage (managed and ephemeral)."
+  value       = try(module.kms_storage[0].key_arn, null)
+}
+
 output "command_session_kms_arn" {
   description = "The ARN of the KMS key used to encrypt the command session."
   value       = try(module.kms[0].key_arn, null)

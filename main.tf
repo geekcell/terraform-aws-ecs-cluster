@@ -50,8 +50,8 @@ resource "aws_ecs_cluster" "main" {
         for_each = var.encrypt_ephemeral_storage || var.encrypt_managed_storage ? [true] : []
 
         content {
-          kms_key_id                           = var.encrypt_managed_storage ? module.kms[0].key_id : null
-          fargate_ephemeral_storage_kms_key_id = var.encrypt_ephemeral_storage ? module.kms_ephemeral[0].key_id : null
+          kms_key_id                           = var.encrypt_managed_storage ? module.kms_storage[0].key_arn : null
+          fargate_ephemeral_storage_kms_key_id = var.encrypt_ephemeral_storage ? module.kms_storage[0].key_arn : null
         }
       }
     }
@@ -86,19 +86,19 @@ resource "aws_cloudwatch_log_group" "container_insights" {
   tags = var.tags
 }
 
-module "kms_ephemeral" {
+module "kms_storage" {
   count = var.encrypt_ephemeral_storage || var.encrypt_managed_storage ? 1 : 0
 
   source  = "geekcell/kms/aws"
   version = ">= 1.0.0, < 2.0.0"
-  policy  = data.aws_iam_policy_document.kms_ephemeral[0].json
+  policy  = data.aws_iam_policy_document.kms_storage[0].json
 
   alias = "ecs/cluster/${var.name}/managed-storage"
   tags  = var.tags
 }
 
 data "aws_caller_identity" "current" {}
-data "aws_iam_policy_document" "kms_ephemeral" {
+data "aws_iam_policy_document" "kms_storage" {
   count = var.encrypt_ephemeral_storage || var.encrypt_managed_storage ? 1 : 0
 
   statement {
